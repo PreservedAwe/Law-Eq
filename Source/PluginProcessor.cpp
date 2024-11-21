@@ -22,10 +22,12 @@ LaweqAudioProcessor::LaweqAudioProcessor()
                        )
 #endif
 {
+
 }
 
 LaweqAudioProcessor::~LaweqAudioProcessor()
 {
+
 }
 
 //==============================================================================
