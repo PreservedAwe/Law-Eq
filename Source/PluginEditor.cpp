@@ -18,9 +18,9 @@ LaweqAudioProcessorEditor::LaweqAudioProcessorEditor (LaweqAudioProcessor& p)
     setSize(400, 300);
 
     //Setup Each GUI object
-    setupLowSlider(lowCutSlider, lowCutLabel);
-    setupMidSlider(midChangeSlider, midChangeLabel);
-    setupHighSlider(highCutSlider, highCutLabel);
+    setupHpSlider(highPassSlider, highPassLabel, highPassAttachment);
+    setupMgSlider(midGainSlider, midGainLabel, midGainAttachment);
+    setupLpSlider(lowPassSlider, lowPassLabel, lowPassAttachment);
         
 }
 
@@ -54,12 +54,12 @@ void LaweqAudioProcessorEditor::resized()
     float totalSliderWidth = (sliderWidth * numOfSliders) + (gapBetweenSliders * (numOfSliders - 1));
     float leftOffset = availableWidth / numOfSliders;
 
-    lowCutSlider.setBounds(leftOffset, yPosition, sliderWidth, availableHeight);
-    highCutSlider.setBounds((leftOffset + (sliderWidth * 2) + (gapBetweenSliders * 2)), yPosition, sliderWidth, availableHeight);
-    midChangeSlider.setBounds((leftOffset + sliderWidth + gapBetweenSliders), yPosition, sliderWidth, availableHeight);
+    highPassSlider.setBounds(leftOffset, yPosition, sliderWidth, availableHeight);
+    lowPassSlider.setBounds((leftOffset + (sliderWidth * 2) + (gapBetweenSliders * 2)), yPosition, sliderWidth, availableHeight);
+    midGainSlider.setBounds((leftOffset + sliderWidth + gapBetweenSliders), yPosition, sliderWidth, availableHeight);
 }
 
-void LaweqAudioProcessorEditor::setupLowSlider(juce::Slider& slider, juce::Label& label)
+void LaweqAudioProcessorEditor::setupHpSlider(juce::Slider& slider, juce::Label& label, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& attachment)
 {
     slider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     slider.setRange(0.0, 127.0, 1.0);
@@ -71,9 +71,10 @@ void LaweqAudioProcessorEditor::setupLowSlider(juce::Slider& slider, juce::Label
     label.setFont(juce::Font(14.0f));
     label.attachToComponent(&slider, false);
     addAndMakeVisible(&label);
+    attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "highPass", slider);
 }
 
-void LaweqAudioProcessorEditor::setupHighSlider(juce::Slider& slider, juce::Label& label)
+void LaweqAudioProcessorEditor::setupLpSlider(juce::Slider& slider, juce::Label& label, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& attachment)
 {
     slider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     slider.setRange(0.0, 127.0, 1.0);
@@ -84,9 +85,10 @@ void LaweqAudioProcessorEditor::setupHighSlider(juce::Slider& slider, juce::Labe
     label.setText("High Cut", juce::dontSendNotification);
     label.attachToComponent(&slider, false);
     addAndMakeVisible(&label);
+    attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "lowPass", slider);
 }
 
-void LaweqAudioProcessorEditor::setupMidSlider(juce::Slider& slider, juce::Label& label)
+void LaweqAudioProcessorEditor::setupMgSlider(juce::Slider& slider, juce::Label& label, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& attachment)
 {
     slider.setSliderStyle(juce::Slider::LinearBarVertical);
     slider.setRange(0.0, 127.0, 1.0);
@@ -97,4 +99,5 @@ void LaweqAudioProcessorEditor::setupMidSlider(juce::Slider& slider, juce::Label
     label.setText("Mids", juce::dontSendNotification);
     label.attachToComponent(&slider, false);
     addAndMakeVisible(&label);
+    attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "midGain", slider);
 }

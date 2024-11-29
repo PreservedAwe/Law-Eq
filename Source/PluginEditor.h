@@ -30,15 +30,19 @@ private:
     // access the processor object that created it.
     LaweqAudioProcessor& audioProcessor;
 
-    juce::Slider lowCutSlider;
-    juce::Slider midChangeSlider;
-    juce::Slider highCutSlider;
-    juce::Label lowCutLabel;
-    juce::Label midChangeLabel;
-    juce::Label highCutLabel;
-    void setupLowSlider(juce::Slider& slider, juce::Label& label);
-    void setupHighSlider(juce::Slider& slider, juce::Label& label);
-    void setupMidSlider(juce::Slider& slider, juce::Label& label);
+    juce::Slider highPassSlider;
+    juce::Slider midGainSlider;
+    juce::Slider lowPassSlider;
+    juce::Label highPassLabel;
+    juce::Label midGainLabel;
+    juce::Label lowPassLabel;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> lowPassAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> highPassAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> midGainAttachment;
+
+    void setupLpSlider(juce::Slider& slider, juce::Label& label, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& attachment);
+    void setupHpSlider(juce::Slider& slider, juce::Label& label, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& attachment);
+    void setupMgSlider(juce::Slider& slider, juce::Label& label, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& attachment);
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LaweqAudioProcessorEditor)

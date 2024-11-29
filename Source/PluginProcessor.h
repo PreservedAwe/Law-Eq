@@ -54,8 +54,11 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 
+    std::unique_ptr<juce::AudioProcessorValueTreeState> parameters;
 
 private:
+    
+    void setupAllParameters();
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LaweqAudioProcessor)
 };

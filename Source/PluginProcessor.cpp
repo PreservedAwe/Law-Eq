@@ -22,7 +22,7 @@ LaweqAudioProcessor::LaweqAudioProcessor()
                        )
 #endif
 {
-
+    setupAllParameters();
 }
 
 LaweqAudioProcessor::~LaweqAudioProcessor()
@@ -154,7 +154,7 @@ void LaweqAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
     // interleaved by keeping the same state.
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        auto* channelData = buffer.getWritePointer(channel);
 
         // ..do something to the data...
     }
@@ -185,6 +185,31 @@ void LaweqAudioProcessor::setStateInformation (const void* data, int sizeInBytes
     // whose contents will have been created by the getStateInformation() call.
 }
 
+//This sets up all parameters for the plugin
+void LaweqAudioProcessor::setupAllParameters()
+{
+    parameters = std::make_unique<juce::AudioProcessorValueTreeState>(*this, nullptr, "Parameters", juce::AudioProcessorValueTreeState::ParameterLayout
+        {
+            std::make_unique<juce::AudioParameterFloat>("lowPass", // parameterID
+            "lowPass", // parameter name
+            0.0f,   // minimum value
+            300.0f,   // maximum value
+            0.5f), // default value
+
+            std::make_unique<juce::AudioParameterFloat>("highPass", // parameterID
+            "highPass", // parameter name
+            0.0f,   // minimum value
+            1.0f,   // maximum value
+            0.5f), // default value
+
+            std::make_unique<juce::AudioParameterFloat>("midGain", // parameterID
+            "midGain", // parameter name
+            0.0f,   // minimum value
+            1.0f,   // maximum value
+            0.5f), // default value
+        }
+    );
+}
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
