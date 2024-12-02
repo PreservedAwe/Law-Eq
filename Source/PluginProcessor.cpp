@@ -97,6 +97,7 @@ void LaweqAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    setupAllFilters(sampleRate, samplesPerBlock);
 }
 
 void LaweqAudioProcessor::releaseResources()
@@ -146,18 +147,15 @@ void LaweqAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer(channel);
+    updateAllFilters();
 
-        // ..do something to the data...
-    }
+    juce::dsp::AudioBlock<float> block = juce::dsp::AudioBlock<float>(buffer);
+    juce::dsp::ProcessContextReplacing<float> context = juce::dsp::ProcessContextReplacing<float>(block);
+
+    // Process each filter in sequence
+    lowPassFilter.process(context);
+    highPassFilter.process(context);
+    midRangeFilter.process(context);
 }
 
 //==============================================================================
@@ -192,22 +190,70 @@ void LaweqAudioProcessor::setupAllParameters()
         {
             std::make_unique<juce::AudioParameterFloat>("lowPass", // parameterID
             "lowPass", // parameter name
-            0.0f,   // minimum value
-            300.0f,   // maximum value
-            0.5f), // default value
+            20.0f,   // minimum value
+            20000.0f,   // maximum value
+            20000.5f), // default value
 
             std::make_unique<juce::AudioParameterFloat>("highPass", // parameterID
             "highPass", // parameter name
-            0.0f,   // minimum value
-            1.0f,   // maximum value
-            0.5f), // default value
+            20.0f,   // minimum value
+            20000.0f,   // maximum value
+            20.0f), // default value
 
             std::make_unique<juce::AudioParameterFloat>("midGain", // parameterID
             "midGain", // parameter name
-            0.0f,   // minimum value
-            1.0f,   // maximum value
-            0.5f), // default value
+            -24.0f,   // minimum value
+            24.0f,   // maximum value
+            0.0f), // default value
+
+            //------------------------------------------------------------------------------------
+            //---------------------These parameters aren't editable by the user-------------------
+            //------------------------------------------------------------------------------------
+
+            std::make_unique<juce::AudioParameterFloat>("midFreq", // parameterID
+            "midFreq", // parameter name
+            200.0f,   // minimum value
+            5000.0f,   // maximum value
+            1000.0f), // default value
+
+            std::make_unique<juce::AudioParameterFloat>("midQ", // parameterID
+            "midQ", // parameter name
+            0.1f,   // minimum value
+            10.0f,   // maximum value
+            1.0f), // default value
+            
         }
+    );
+}
+
+//This sets up all filters for the plugin
+void LaweqAudioProcessor::setupAllFilters(double sampleRate, int samplesPerBlock)
+{
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumOutputChannels();
+
+    *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, parameters->getRawParameterValue("lowPass")->load());
+    *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, parameters->getRawParameterValue("highPass")->load());
+    *midRangeFilter.state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, parameters->getRawParameterValue("midFreq")->load(),
+        parameters->getRawParameterValue("midQ")->load(),
+        juce::Decibels::decibelsToGain(parameters->getRawParameterValue("midGain")->load())
+        );
+
+    lowPassFilter.prepare(spec);
+    highPassFilter.prepare(spec);
+    midRangeFilter.prepare(spec);
+}
+
+//This sets up all filters for the plugin
+void LaweqAudioProcessor::updateAllFilters()
+{
+    *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(getSampleRate(), parameters->getRawParameterValue("lowPass")->load());
+    *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(getSampleRate(), parameters->getRawParameterValue("highPass")->load());
+    *midRangeFilter.state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(), parameters->getRawParameterValue("midFreq")->load(),
+        parameters->getRawParameterValue("midQ")->load(),
+        juce::Decibels::decibelsToGain(parameters->getRawParameterValue("midGain")->load())
     );
 }
 //==============================================================================

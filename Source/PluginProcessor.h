@@ -57,8 +57,14 @@ public:
     std::unique_ptr<juce::AudioProcessorValueTreeState> parameters;
 
 private:
-    
+    //==============================================================================
+    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> lowPassFilter;
+    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> highPassFilter;
+    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> midRangeFilter;
     void setupAllParameters();
+    void setupAllFilters(double sampleRate, int samplesPerBlock);
+    void updateAllFilters();
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LaweqAudioProcessor)
 };
