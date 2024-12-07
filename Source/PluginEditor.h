@@ -10,7 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "CustomLookAndFeel.h"
+#include "./Lib/CustomLookAndFeel.h"
 
 //---------------------Custom GUI Components--------------------------------------------------
 
@@ -73,7 +73,8 @@ private:
     CustomVerticalSlider midGainSlider;
     juce::Label highPassLabel, midGainLabel, lowPassLabel;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> lowPassAttachment, highPassAttachment, midGainAttachment;
-
+    juce::Image pluginWindowPng;
+    CustomLookAndFeel customLnf;
     void getAllComponents();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LaweqAudioProcessorEditor)

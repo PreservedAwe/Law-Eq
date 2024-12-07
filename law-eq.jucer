@@ -4,6 +4,24 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildStandalone,buildVST3">
   <MAINGROUP id="Dj2XG2" name="law-eq">
     <GROUP id="{0FFCB0C3-3C0B-478F-C66A-2E6C761B3505}" name="Source">
+      <GROUP id="{0506B4AF-0E17-E5E4-566E-4AC1D573E119}" name="Assets">
+        <FILE id="kXK8Bs" name="pluginWindow.png" compile="0" resource="1"
+              file="Source/Assets/pluginWindow.png"/>
+        <FILE id="YwXHD6" name="pluginWindow.svg" compile="0" resource="1"
+              file="Source/Assets/pluginWindow.svg"/>
+        <FILE id="hd03HB" name="sliderButton.png" compile="0" resource="1"
+              file="Source/Assets/sliderButton.png"/>
+        <FILE id="y4fuC2" name="sliderButton.svg" compile="0" resource="1"
+              file="Source/Assets/sliderButton.svg"/>
+        <FILE id="Ygvcyg" name="sliderCircle.png" compile="0" resource="1"
+              file="Source/Assets/sliderCircle.png"/>
+        <FILE id="UZw71t" name="sliderCircle.svg" compile="0" resource="1"
+              file="Source/Assets/sliderCircle.svg"/>
+      </GROUP>
+      <GROUP id="{8164D155-C556-ACD5-1BF4-0172F878E9B6}" name="Lib">
+        <FILE id="BhQNxP" name="CustomLookAndFeel.h" compile="0" resource="0"
+              file="Source/Lib/CustomLookAndFeel.h"/>
+      </GROUP>
       <FILE id="hUvm26" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="vh9nRq" name="PluginProcessor.h" compile="0" resource="0"
