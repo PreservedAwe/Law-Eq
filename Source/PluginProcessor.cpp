@@ -156,6 +156,7 @@ void LaweqAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
     lowPassFilter.process(context);
     highPassFilter.process(context);
     midRangeFilter.process(context);
+    buffer.applyGain(juce::Decibels::decibelsToGain(parameters->getRawParameterValue("allGain")->load()));
 }
 
 //==============================================================================
@@ -210,6 +211,12 @@ void LaweqAudioProcessor::setupAllParameters()
 
             std::make_unique<juce::AudioParameterFloat>("midGain", // parameterID
             "midGain", // parameter name
+            -24.0f,   // minimum value
+            24.0f,   // maximum value
+            0.0f), // default value
+
+            std::make_unique<juce::AudioParameterFloat>("allGain", // parameterID
+            "allGain", // parameter name
             -24.0f,   // minimum value
             24.0f,   // maximum value
             0.0f), // default value

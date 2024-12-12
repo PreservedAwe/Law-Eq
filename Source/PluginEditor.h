@@ -16,10 +16,10 @@
 
 struct CustomRotarySlider : juce::Slider
 {
-    CustomRotarySlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+    CustomRotarySlider(CustomLookAndFeel* customLnf) : juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
         juce::Slider::TextEntryBoxPosition::NoTextBox)
     {
-        setLookAndFeel(&customLnf);
+        setLookAndFeel(customLnf);
     }
 
     ~CustomRotarySlider() 
@@ -37,18 +37,29 @@ struct CustomRotarySlider : juce::Slider
 
         getLookAndFeel().drawRotarySlider(g, sliderBounds.getX(), sliderBounds.getY(), sliderBounds.getWidth(), sliderBounds.getHeight(), sliderProportional, startAngle, endAngle, *this);
     };
-
-    private:
-        CustomLookAndFeel customLnf;
 };
 
 struct CustomVerticalSlider : juce::Slider
 {
-    CustomVerticalSlider() : juce::Slider(juce::Slider::SliderStyle::LinearBarVertical,
+    CustomVerticalSlider(CustomLookAndFeel* customLnf) : juce::Slider(juce::Slider::SliderStyle::LinearBarVertical,
         juce::Slider::TextEntryBoxPosition::NoTextBox)
     {
-
+        setLookAndFeel(customLnf);
     }
+
+    ~CustomVerticalSlider() 
+    {
+        setLookAndFeel(nullptr);
+    }
+
+    void paint(juce::Graphics& g) override 
+    {
+        auto range = getRange();
+        auto sliderProportional = juce::jmap(getValue(), range.getStart(), range.getEnd(), 0.0, 1.0);
+        auto sliderBounds = getLocalBounds();
+
+        getLookAndFeel().drawLinearSlider(g, sliderBounds.getX(), sliderBounds.getY(), sliderBounds.getWidth(), sliderBounds.getHeight(), sliderProportional, 0.f, 1.f, juce::Slider::SliderStyle::LinearBarVertical, *this);
+    };
 };
 
 //==============================================================================
@@ -69,12 +80,11 @@ private:
     // access the processor object that created it.
     LaweqAudioProcessor& audioProcessor;
 
-    CustomRotarySlider highPassSlider, lowPassSlider;
+    std::unique_ptr<CustomLookAndFeel> customLnf;
+    CustomRotarySlider highPassSlider, lowPassSlider, allGainSlider;
     CustomVerticalSlider midGainSlider;
     juce::Label highPassLabel, midGainLabel, lowPassLabel;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> lowPassAttachment, highPassAttachment, midGainAttachment;
-    juce::Image pluginWindowPng;
-    CustomLookAndFeel customLnf;
     void getAllComponents();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LaweqAudioProcessorEditor)

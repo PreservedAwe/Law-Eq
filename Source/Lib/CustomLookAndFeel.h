@@ -4,15 +4,13 @@
 
 struct CustomLookAndFeel : juce::LookAndFeel_V4
 {
-    juce::Image sliderCirclePng, sliderButtonPng;
+    juce::Image pluginWindowPng, sliderRotaryCirclePng, sliderButtonPng, sliderVerticalStickPng;
 
     CustomLookAndFeel()
     {
-        //juce::File sourceFile = juce::File(__FILE__);
-        //juce::File projectFolder = sourceFile.getParentDirectory().getParentDirectory().getParentDirectory();
-
-        sliderCirclePng = cropImage(juce::ImageCache::getFromMemory(BinaryData::sliderCircle_png, BinaryData::sliderCircle_pngSize));
-        sliderButtonPng = cropImage(juce::ImageCache::getFromMemory(BinaryData::sliderButton_png, BinaryData::sliderButton_pngSize));
+        sliderRotaryCirclePng = cropImage(juce::ImageCache::getFromMemory(BinaryData::sliderRotaryCircle_png, BinaryData::sliderRotaryCircle_pngSize));
+        sliderVerticalStickPng = cropImage(juce::ImageCache::getFromMemory(BinaryData::sliderVerticalStick_png, BinaryData::sliderVerticalStick_pngSize));
+        pluginWindowPng = cropImage(juce::ImageCache::getFromMemory(BinaryData::pluginWindow_png, BinaryData::pluginWindow_pngSize));
     }
 
     static juce::Image cropImage(const juce::Image& image)
@@ -33,18 +31,17 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
     {
         auto bounds = juce::Rectangle<float>(x, y, width, height);
 
-        if (sliderCirclePng.isValid())
+        if (sliderRotaryCirclePng.isValid())
         {
-            g.drawImage(sliderCirclePng, bounds, juce::RectanglePlacement::stretchToFit);
+            g.drawImage(sliderRotaryCirclePng, bounds, juce::RectanglePlacement::stretchToFit);
         }
 
-        if (sliderButtonPng.isValid())
+        if (5 < 1)
         {
             float angle = juce::jmap(sliderPosProportional, 0.0f, 1.0f, rotaryStartAngle, rotaryEndAngle);
             float buttonScale = 0.3f;
             float buttonWidth = width * buttonScale;
             float buttonHeight = height * buttonScale;
-            //auto buttonBounds = bounds.reduced(bounds.getWidth() * (1 - buttonScale) / 2);
             auto buttonBounds = juce::Rectangle<float>(
                 bounds.getCentreX() - (buttonWidth / 2),
                 bounds.getCentreY() - (buttonHeight / 2),
@@ -55,11 +52,28 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
             
             g.saveState();
             g.addTransform(transform);
-            g.drawImage(sliderButtonPng, buttonBounds, juce::RectanglePlacement::stretchToFit);
+            g.drawImage(sliderRotaryCirclePng, buttonBounds, juce::RectanglePlacement::stretchToFit);
             g.restoreState();
         }
-        //g.setColour(juce::Colours::green);
-        //g.fillEllipse(buttonBounds);
+    };
+
+    void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPosProportional, float minSliderPos, float maxSliderPos, juce::Slider::SliderStyle sliderStyle, juce::Slider&) override
+    {
+        auto bounds = juce::Rectangle<float>(x, y, width, height);
+
+        if (sliderVerticalStickPng.isValid())
+        {
+            g.drawImage(sliderVerticalStickPng, bounds, juce::RectanglePlacement::stretchToFit);
+        }
+    };
+
+    void drawResizableFrame(juce::Graphics& g, int w, int h, const juce::BorderSize<int>& b) override
+    {
+        auto bounds = juce::Rectangle<float>(0, 0, w, h);
+        if (pluginWindowPng.isValid())
+        {
+            g.drawImage(pluginWindowPng, bounds, juce::RectanglePlacement::stretchToFit);
+        }
     };
 };
 

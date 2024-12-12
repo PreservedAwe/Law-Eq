@@ -11,13 +11,13 @@
 
 //==============================================================================
 LaweqAudioProcessorEditor::LaweqAudioProcessorEditor (LaweqAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p), customLnf(std::make_unique<CustomLookAndFeel>()),  highPassSlider(customLnf.get()), lowPassSlider(customLnf.get()), midGainSlider(customLnf.get()), allGainSlider(customLnf.get())
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     //setSize(400, 300);
     setSize(700, 400);
-    setLookAndFeel(&customLnf);
+    setLookAndFeel(customLnf.get());
 
     //Setup Each GUI object
     getAllComponents();
@@ -32,19 +32,7 @@ LaweqAudioProcessorEditor::~LaweqAudioProcessorEditor()
 //==============================================================================
 void LaweqAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    pluginWindowPng = CustomLookAndFeel::cropImage(juce::ImageCache::getFromMemory(BinaryData::pluginWindow_png, BinaryData::pluginWindow_pngSize));
-    if (pluginWindowPng.isValid())
-    {
-        g.drawImage(pluginWindowPng, getLocalBounds().toFloat(), juce::RectanglePlacement::stretchToFit);
-    }
-    else
-    {
-        g.setColour(juce::Colours::white);
-        g.setFont(15.0f);
-        g.drawFittedText("Law Eq!", getLocalBounds(), juce::Justification::centred, 1);
-    }
-
+    getLookAndFeel().drawResizableFrame(g, getWidth(), getHeight(), juce::BorderSize<int>());
 }
 
 void LaweqAudioProcessorEditor::resized()
