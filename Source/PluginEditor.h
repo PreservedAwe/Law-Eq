@@ -62,6 +62,24 @@ struct CustomVerticalSlider : juce::Slider
     };
 };
 
+struct CustomToggleButton : juce::ToggleButton
+{
+    CustomToggleButton(CustomLookAndFeel* customLnf) : juce::ToggleButton()
+    {
+        setLookAndFeel(customLnf);
+    }
+
+    ~CustomToggleButton()
+    {
+        setLookAndFeel(nullptr);
+    }
+
+    void paint(juce::Graphics& g) override
+    {
+        getLookAndFeel().drawToggleButton(g, *this, (this->getToggleState() == true), (this->getToggleState() == false));
+    }
+};
+
 //==============================================================================
 /**
 */
@@ -83,8 +101,10 @@ private:
     std::unique_ptr<CustomLookAndFeel> customLnf;
     CustomRotarySlider highPassSlider, lowPassSlider, allGainSlider;
     CustomVerticalSlider midGainSlider;
+    CustomToggleButton midGainToggle, highPassToggle, lowPassToggle;
     juce::Label highPassLabel, midGainLabel, lowPassLabel;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> lowPassAttachment, highPassAttachment, midGainAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> lowPassAttachment, highPassAttachment, midGainAttachment, allGainAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> lpToggleAttachment, hpToggleAttachment, mgToggleAttachment;
     void getAllComponents();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LaweqAudioProcessorEditor)

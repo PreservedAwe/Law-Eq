@@ -11,7 +11,7 @@
 
 //==============================================================================
 LaweqAudioProcessorEditor::LaweqAudioProcessorEditor (LaweqAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), customLnf(std::make_unique<CustomLookAndFeel>()),  highPassSlider(customLnf.get()), lowPassSlider(customLnf.get()), midGainSlider(customLnf.get()), allGainSlider(customLnf.get())
+    : AudioProcessorEditor (&p), audioProcessor (p), customLnf(std::make_unique<CustomLookAndFeel>()), highPassSlider(customLnf.get()), lowPassSlider(customLnf.get()), midGainSlider(customLnf.get()), allGainSlider(customLnf.get()), highPassToggle(customLnf.get()), lowPassToggle(customLnf.get()), midGainToggle(customLnf.get())
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -41,12 +41,38 @@ void LaweqAudioProcessorEditor::resized()
     // subcomponents in your editor..
 
     auto bounds = getLocalBounds();
+    auto padding = 0.05f;
+    bounds = bounds.reduced(bounds.getWidth() * padding, bounds.getHeight() * padding);
+
+    //Top and Bottom
+    auto topMain = bounds.removeFromTop(bounds.getHeight() * 0.20);
+    auto bottomMain = bounds.removeFromBottom(bounds.getHeight() * 0.25);
+
+    //Bottom Left 
+    auto leftBArea = bottomMain.removeFromLeft(bottomMain.getWidth() * 0.33);
+    auto leftBSubArea = leftBArea.removeFromLeft(leftBArea.getWidth() * 0.33);
+    auto rightBSubArea = leftBArea.removeFromRight(leftBArea.getWidth() * 0.5);
+    auto middleBSubArea = leftBArea;
+
+    //Bottom Right
+    auto rightBArea = bottomMain.removeFromRight(bottomMain.getWidth() * 0.5);
+
+    //Bottom Middle
+    auto middleBArea = bottomMain;
+
+    //Middle Area
     auto leftArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto rightArea = bounds.removeFromRight(bounds.getWidth() * 0.5);
     auto middleArea = bounds;
+
+
     lowPassSlider.setBounds(rightArea);
     highPassSlider.setBounds(leftArea);
     midGainSlider.setBounds(middleArea);
+    allGainSlider.setBounds(rightBArea);
+    lowPassToggle.setBounds(rightBSubArea);
+    midGainToggle.setBounds(middleBSubArea);
+    highPassToggle.setBounds(leftBSubArea);
 }
 
 void LaweqAudioProcessorEditor::getAllComponents()
@@ -56,17 +82,39 @@ void LaweqAudioProcessorEditor::getAllComponents()
         &highPassSlider,
         &lowPassSlider,
         &midGainSlider,
+        &allGainSlider,
+        &highPassToggle,
+        &lowPassToggle,
+        &midGainToggle,
         &highPassLabel,
         &midGainLabel,
         &lowPassLabel
     };
 
-    for (auto* comp : components)
-    {
-        addAndMakeVisible(comp);
-    }
+    std::vector<juce::ToggleButton*> buttons = { &lowPassToggle, &highPassToggle, &midGainToggle };
 
     highPassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "highPass", highPassSlider);
     lowPassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "lowPass", lowPassSlider);
     midGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "midGain", midGainSlider);
+    allGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "allGain", allGainSlider);
+    lpToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "lpToggle", lowPassToggle);
+    hpToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "hpToggle", highPassToggle);
+    mgToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "mgToggle", midGainToggle);
+    highPassSlider.setValue(audioProcessor.parameters->getRawParameterValue("highPass")->load());
+    lowPassSlider.setValue(audioProcessor.parameters->getRawParameterValue("lowPass")->load());
+    midGainSlider.setValue(audioProcessor.parameters->getRawParameterValue("midGain")->load());
+    allGainSlider.setValue(audioProcessor.parameters->getRawParameterValue("allGain")->load());
+
+    for (auto* b : buttons)
+    {
+        b->setClickingTogglesState(true);
+        b->setToggleState(true, juce::dontSendNotification);
+        b->onClick = [b] { b->repaint(); };
+
+    }
+
+    for (auto* comp : components)
+    {
+        addAndMakeVisible(comp);
+    }
 }

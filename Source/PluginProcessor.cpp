@@ -153,9 +153,18 @@ void LaweqAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
     juce::dsp::ProcessContextReplacing<float> context = juce::dsp::ProcessContextReplacing<float>(block);
 
     // Process each filter in sequence
-    lowPassFilter.process(context);
-    highPassFilter.process(context);
-    midRangeFilter.process(context);
+    if(parameters->getParameter("lpToggle")->getValue() == true)
+    {
+        lowPassFilter.process(context);
+    }
+    if (parameters->getParameter("hpToggle")->getValue() == true)
+    {
+        highPassFilter.process(context);
+    }
+    if (parameters->getParameter("mgToggle")->getValue() == true)
+    {
+        midRangeFilter.process(context);
+    }
     buffer.applyGain(juce::Decibels::decibelsToGain(parameters->getRawParameterValue("allGain")->load()));
 }
 
@@ -201,7 +210,7 @@ void LaweqAudioProcessor::setupAllParameters()
             "lowPass", // parameter name
             20.0f,   // minimum value
             20000.0f,   // maximum value
-            20000.5f), // default value
+            20000.0f), // default value
 
             std::make_unique<juce::AudioParameterFloat>("highPass", // parameterID
             "highPass", // parameter name
@@ -220,6 +229,18 @@ void LaweqAudioProcessor::setupAllParameters()
             -24.0f,   // minimum value
             24.0f,   // maximum value
             0.0f), // default value
+
+            std::make_unique<juce::AudioParameterBool>("lpToggle", // parameterID
+            "lpToggle",   // parameter name
+            true),        // default value
+
+            std::make_unique<juce::AudioParameterBool>("hpToggle", // parameterID
+            "hpToggle",   // parameter name
+            true),        // default value
+
+            std::make_unique<juce::AudioParameterBool>("mgToggle", // parameterID
+            "mgToggle",   // parameter name
+            true),        // default value
 
             //------------------------------------------------------------------------------------
             //---------------------These parameters aren't editable by the user-------------------

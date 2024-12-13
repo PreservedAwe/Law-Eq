@@ -7,10 +7,18 @@
       <GROUP id="{0506B4AF-0E17-E5E4-566E-4AC1D573E119}" name="Assets">
         <FILE id="dQKE0Q" name="pluginWindow.png" compile="0" resource="1"
               file="Source/Assets/pluginWindow.png"/>
-        <FILE id="UQOzCI" name="sliderRotaryCircle.png" compile="0" resource="1"
+        <FILE id="wSf9IX" name="sliderRotaryCircle.png" compile="0" resource="1"
               file="Source/Assets/sliderRotaryCircle.png"/>
-        <FILE id="WLnBkS" name="sliderVerticalStick.png" compile="0" resource="1"
+        <FILE id="Lap77T" name="sliderRotaryThumb.png" compile="0" resource="1"
+              file="Source/Assets/sliderRotaryThumb.png"/>
+        <FILE id="Dw8wwv" name="sliderVerticalStick.png" compile="0" resource="1"
               file="Source/Assets/sliderVerticalStick.png"/>
+        <FILE id="CcqOdJ" name="sliderVerticalThumb.png" compile="0" resource="1"
+              file="Source/Assets/sliderVerticalThumb.png"/>
+        <FILE id="ELpDKb" name="toggleButtonOff.png" compile="0" resource="1"
+              file="Source/Assets/toggleButtonOff.png"/>
+        <FILE id="Rh6Q5P" name="toggleButtonOn.png" compile="0" resource="1"
+              file="Source/Assets/toggleButtonOn.png"/>
       </GROUP>
       <GROUP id="{8164D155-C556-ACD5-1BF4-0172F878E9B6}" name="Lib">
         <FILE id="BhQNxP" name="CustomLookAndFeel.h" compile="0" resource="0"
