@@ -153,15 +153,15 @@ void LaweqAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
     juce::dsp::ProcessContextReplacing<float> context = juce::dsp::ProcessContextReplacing<float>(block);
 
     // Process each filter in sequence
-    if(parameters->getParameter("lpToggle")->getValue() == true)
+    if(parameters->getRawParameterValue("lpToggle")->load() > 0.5f)
     {
         lowPassFilter.process(context);
     }
-    if (parameters->getParameter("hpToggle")->getValue() == true)
+    if (parameters->getRawParameterValue("hpToggle")->load() > 0.5f)
     {
         highPassFilter.process(context);
     }
-    if (parameters->getParameter("mgToggle")->getValue() == true)
+    if (parameters->getRawParameterValue("mgToggle")->load() > 0.5f)
     {
         midRangeFilter.process(context);
     }
@@ -194,7 +194,7 @@ void LaweqAudioProcessor::setStateInformation (const void* data, int sizeInBytes
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
     auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
-    if(tree.isValid())
+    if(tree.isValid() && !juce::JUCEApplication::getInstance()->isStandaloneApp())
     {
         parameters->replaceState(tree);
         updateAllFilters();
@@ -204,62 +204,54 @@ void LaweqAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 //This sets up all parameters for the plugin
 void LaweqAudioProcessor::setupAllParameters()
 {
-    parameters = std::make_unique<juce::AudioProcessorValueTreeState>(*this, nullptr, "Parameters", juce::AudioProcessorValueTreeState::ParameterLayout
-        {
-            std::make_unique<juce::AudioParameterFloat>("lowPass", // parameterID
+    auto createParameterLayout = []() 
+    {
+        juce::AudioProcessorValueTreeState::ParameterLayout layout;
+
+        layout.add(std::make_unique<juce::AudioParameterFloat>("lowPass", // parameterID
             "lowPass", // parameter name
-            20.0f,   // minimum value
-            20000.0f,   // maximum value
-            20000.0f), // default value
-
-            std::make_unique<juce::AudioParameterFloat>("highPass", // parameterID
+            juce::NormalisableRange<float>(20.0f, 20000.0f, 1.0f, 1.0f), // range for the parameters along with interval and skew factor
+            20000.0f)); // default value
+        layout.add(std::make_unique<juce::AudioParameterFloat>("highPass", // parameterID
             "highPass", // parameter name
-            20.0f,   // minimum value
-            20000.0f,   // maximum value
-            20.0f), // default value
-
-            std::make_unique<juce::AudioParameterFloat>("midGain", // parameterID
+            juce::NormalisableRange<float>(20.0f, 20000.0f, 1.0f, 1.0f), // range for the parameters along with interval and skew factor
+            20.0f)); // default value
+        layout.add(std::make_unique<juce::AudioParameterFloat>("midGain", // parameterID
             "midGain", // parameter name
-            -24.0f,   // minimum value
-            24.0f,   // maximum value
-            0.0f), // default value
-
-            std::make_unique<juce::AudioParameterFloat>("allGain", // parameterID
+            juce::NormalisableRange<float>(-24.0f, 24.0f, 0.5f, 1.0f), // range for the parameters along with interval and skew factor
+            0.0f)); // default value
+        layout.add(std::make_unique<juce::AudioParameterFloat>("allGain", // parameterID
             "allGain", // parameter name
-            -24.0f,   // minimum value
-            24.0f,   // maximum value
-            0.0f), // default value
-
-            std::make_unique<juce::AudioParameterBool>("lpToggle", // parameterID
+            juce::NormalisableRange<float>(-24.0f, 24.0f, 0.05f, 1.0f), // range for the parameters along with interval and skew factor
+            0.0f)); // default value
+        layout.add(std::make_unique<juce::AudioParameterBool>("lpToggle", // parameterID
             "lpToggle",   // parameter name
-            true),        // default value
-
-            std::make_unique<juce::AudioParameterBool>("hpToggle", // parameterID
+            true));        // default value
+        layout.add(std::make_unique<juce::AudioParameterBool>("hpToggle", // parameterID
             "hpToggle",   // parameter name
-            true),        // default value
-
-            std::make_unique<juce::AudioParameterBool>("mgToggle", // parameterID
+            true));        // default value
+        layout.add(std::make_unique<juce::AudioParameterBool>("mgToggle", // parameterID
             "mgToggle",   // parameter name
-            true),        // default value
+            true));        // default value
 
-            //------------------------------------------------------------------------------------
-            //---------------------These parameters aren't editable by the user-------------------
-            //------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------
+        //---------------------These parameters aren't editable by the user-------------------
+        //------------------------------------------------------------------------------------
 
-            std::make_unique<juce::AudioParameterFloat>("midFreq", // parameterID
+        layout.add(std::make_unique<juce::AudioParameterFloat>("midFreq", // parameterID
             "midFreq", // parameter name
-            200.0f,   // minimum value
-            5000.0f,   // maximum value
-            1000.0f), // default value
-
-            std::make_unique<juce::AudioParameterFloat>("midQ", // parameterID
+            juce::NormalisableRange<float>(200.0f, 5000.0f, 0.5f, 1.0f), // range for the parameters along with interval and skew factor
+            1000.0f)); // default value
+        layout.add(std::make_unique<juce::AudioParameterFloat>("midQ", // parameterID
             "midQ", // parameter name
-            0.1f,   // minimum value
-            10.0f,   // maximum value
-            1.0f), // default value
-            
-        }
-    );
+            juce::NormalisableRange<float>(0.1f, 10.0f, 1.0f, 1.0f), // range for the parameters along with interval and skew factor
+            1.0f)); // default value
+
+        return layout;
+    };
+
+
+    parameters = std::make_unique<juce::AudioProcessorValueTreeState>(*this, nullptr, "Parameters", createParameterLayout());
 }
 
 //This sets up all filters for the plugin

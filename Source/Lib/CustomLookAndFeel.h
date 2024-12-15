@@ -31,7 +31,7 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
         }
     };
 
-    void drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, juce::Slider&) override 
+    void drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, juce::Slider& slider) override 
     {
         auto bounds = juce::Rectangle<float>(x, y, width, height);
 
@@ -55,9 +55,15 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
             g.drawImage(sliderRotaryThumbPng, r, juce::RectanglePlacement::stretchToFit);
             g.restoreState();
         }
+
+        auto value = slider.getValue();
+        auto text = juce::String::formatted("%.1f", value);
+        g.setColour(juce::Colours::white);
+        g.setFont(15.0f);
+        g.drawFittedText(text, bounds.toNearestInt(), juce::Justification::centred, 1);
     };
 
-    void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPosProportional, float minSliderPos, float maxSliderPos, juce::Slider::SliderStyle sliderStyle, juce::Slider&) override
+    void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPosProportional, float minSliderPos, float maxSliderPos, juce::Slider::SliderStyle sliderStyle, juce::Slider& slider) override
     {
         auto bounds = juce::Rectangle<float>(x, y, width, height);
 
@@ -77,6 +83,12 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
 
             g.drawImage(sliderVerticalThumbPng, r, juce::RectanglePlacement::stretchToFit);
         }
+
+        auto value = slider.getValue();
+        auto text = juce::String::formatted("%.1f", value);
+        g.setColour(juce::Colours::white);
+        g.setFont(15.0f);
+        g.drawFittedText(text, bounds.toNearestInt(), juce::Justification::centred, 1);
     };
 
     void drawResizableFrame(juce::Graphics& g, int w, int h, const juce::BorderSize<int>& b) override

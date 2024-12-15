@@ -77,7 +77,24 @@ void LaweqAudioProcessorEditor::resized()
 
 void LaweqAudioProcessorEditor::getAllComponents()
 {
-    std::vector<juce::Component*> components = 
+
+    highPassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "highPass", highPassSlider);
+    lowPassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "lowPass", lowPassSlider);
+    midGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "midGain", midGainSlider);
+    allGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "allGain", allGainSlider);
+    lpToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "lpToggle", lowPassToggle);
+    hpToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "hpToggle", highPassToggle);
+    mgToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "mgToggle", midGainToggle);
+
+    std::vector<CustomToggleButton*> buttons = { &lowPassToggle, &highPassToggle, &midGainToggle };
+
+    for (auto* b : buttons)
+    {
+        b->setClickingTogglesState(true);
+        b->onClick = [b] { b->repaint(); };
+    }
+
+    std::vector<juce::Component*> components =
     {
         &highPassSlider,
         &lowPassSlider,
@@ -91,30 +108,9 @@ void LaweqAudioProcessorEditor::getAllComponents()
         &lowPassLabel
     };
 
-    std::vector<juce::ToggleButton*> buttons = { &lowPassToggle, &highPassToggle, &midGainToggle };
-
-    highPassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "highPass", highPassSlider);
-    lowPassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "lowPass", lowPassSlider);
-    midGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "midGain", midGainSlider);
-    allGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "allGain", allGainSlider);
-    lpToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "lpToggle", lowPassToggle);
-    hpToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "hpToggle", highPassToggle);
-    mgToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "mgToggle", midGainToggle);
-    highPassSlider.setValue(audioProcessor.parameters->getRawParameterValue("highPass")->load());
-    lowPassSlider.setValue(audioProcessor.parameters->getRawParameterValue("lowPass")->load());
-    midGainSlider.setValue(audioProcessor.parameters->getRawParameterValue("midGain")->load());
-    allGainSlider.setValue(audioProcessor.parameters->getRawParameterValue("allGain")->load());
-
-    for (auto* b : buttons)
-    {
-        b->setClickingTogglesState(true);
-        b->setToggleState(true, juce::dontSendNotification);
-        b->onClick = [b] { b->repaint(); };
-
-    }
-
     for (auto* comp : components)
     {
         addAndMakeVisible(comp);
     }
+
 }
