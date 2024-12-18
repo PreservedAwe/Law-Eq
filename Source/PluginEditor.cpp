@@ -13,9 +13,10 @@
 LaweqAudioProcessorEditor::LaweqAudioProcessorEditor (LaweqAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p),
     customLnf(std::make_unique<CustomLookAndFeel>()),
-    highPassSlider(customLnf.get()), lowPassSlider(customLnf.get()), midGainSlider(customLnf.get()), allGainSlider(customLnf.get()),
+    highPassSlider(customLnf.get(), "Hz"), lowPassSlider(customLnf.get(), "Hz"), midGainSlider(customLnf.get(), "dB"), allGainSlider(customLnf.get(), "dB"),
     highPassToggle(customLnf.get()), lowPassToggle(customLnf.get()), midGainToggle(customLnf.get()),
-    highPassLabel(customLnf.get()), midGainLabel(customLnf.get()), lowPassLabel(customLnf.get()), allGainLabel(customLnf.get()), midGainToggleLabel(customLnf.get()), highPassToggleLabel(customLnf.get()), lowPassToggleLabel(customLnf.get()), pluginWindowLabel(customLnf.get())
+    highPassLabel(customLnf.get()), midGainLabel(customLnf.get()), lowPassLabel(customLnf.get()), allGainLabel(customLnf.get()), midGainToggleLabel(customLnf.get()), highPassToggleLabel(customLnf.get()), lowPassToggleLabel(customLnf.get()),
+    pluginWindowHeading(customLnf.get())
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -86,7 +87,7 @@ void LaweqAudioProcessorEditor::resized()
     lowPassToggle.setBounds(rightBSubArea);
     midGainToggle.setBounds(middleBSubArea);
     highPassToggle.setBounds(leftBSubArea);
-    pluginWindowLabel.setBounds(middleTArea);
+    pluginWindowHeading.setBounds(middleTArea);
 }
 
 void LaweqAudioProcessorEditor::getAllComponents()
@@ -121,7 +122,7 @@ void LaweqAudioProcessorEditor::getAllComponents()
     lowPassToggleLabel.attachToComponent(&lowPassToggle, false);
     midGainToggleLabel.setText("M", juce::sendNotification);
     midGainToggleLabel.attachToComponent(&midGainToggle, false);
-    pluginWindowLabel.setText("LAW-EQ", juce::sendNotification);
+    pluginWindowHeading.setText("LAW-EQ", juce::sendNotification);
 
     std::vector<juce::Component*> components =
     {
@@ -139,7 +140,7 @@ void LaweqAudioProcessorEditor::getAllComponents()
         &midGainToggleLabel,
         &lowPassToggleLabel,
         &highPassToggleLabel,
-        &pluginWindowLabel,
+        &pluginWindowHeading,
     };
 
     for (auto* comp : components)

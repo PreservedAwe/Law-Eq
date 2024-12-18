@@ -4,7 +4,7 @@
 
 struct CustomLookAndFeel : juce::LookAndFeel_V4
 {
-    juce::Image pluginWindowPng, sliderRotaryCirclePng, sliderButtonPng, sliderVerticalStickPng, sliderVerticalThumbPng, sliderRotaryThumbPng, toggleButtonOffPng, toggleButtonOnPng;
+    juce::Image pluginWindowPng, sliderRotaryCirclePng, sliderButtonPng, sliderVerticalStickPng, sliderVerticalThumbPng, sliderRotaryThumbPng, toggleButtonOffPng, toggleButtonOnPng, pluginWindowHeadingPng;
 
     CustomLookAndFeel()
     {
@@ -15,6 +15,7 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
         sliderRotaryThumbPng = cropImage(juce::ImageCache::getFromMemory(BinaryData::sliderRotaryThumb_png, BinaryData::sliderRotaryThumb_pngSize));
         toggleButtonOffPng = cropImage(juce::ImageCache::getFromMemory(BinaryData::toggleButtonOff_png, BinaryData::toggleButtonOff_pngSize));
         toggleButtonOnPng = cropImage(juce::ImageCache::getFromMemory(BinaryData::toggleButtonOn_png, BinaryData::toggleButtonOn_pngSize));
+        pluginWindowHeadingPng = cropImage(juce::ImageCache::getFromMemory(BinaryData::pluginWindowHeading_png, BinaryData::pluginWindowHeading_pngSize));
     }
 
     static juce::Image cropImage(const juce::Image& image)
@@ -46,7 +47,7 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
             juce::Rectangle<float> r;
             r.setLeft(center.getX() - 10);
             r.setRight(center.getX() + 10);
-            r.setTop(center.getY() - bounds.getHeight() / 4.5);
+            r.setTop(center.getY() - bounds.getHeight() / 2.6);
             r.setBottom(center.getY());
 
             auto sliderAngRad = juce::jmap(sliderPosProportional, 0.f, 1.f, rotaryStartAngle, rotaryEndAngle);
@@ -57,10 +58,24 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
         }
 
         auto value = slider.getValue();
-        auto text = juce::String::formatted("%.0f", value);
+        auto text = slider.getTextFromValue(value);
         g.setColour(juce::Colours::white);
-        g.setFont(19.0f);
-        g.drawFittedText(text, bounds.toNearestInt(), juce::Justification::centred, 1);
+        g.setFont(11.0f);
+
+        auto textWidth = g.getCurrentFont().getStringWidth(text);
+        auto textHeight = g.getCurrentFont().getHeight();
+
+        auto textBounds = juce::Rectangle<int>(
+            bounds.getCentreX() - textWidth / 2 - 5,
+            bounds.getCentreY() - textHeight / 2 - 2,
+            textWidth + 10,
+            textHeight + 4
+        ).toNearestInt();
+
+        g.setColour(juce::Colours::black);
+        g.fillRect(textBounds);
+        g.setColour(juce::Colours::white);
+        g.drawText(text, textBounds, juce::Justification::centred, false);
     };
 
     void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPosProportional, float minSliderPos, float maxSliderPos, juce::Slider::SliderStyle sliderStyle, juce::Slider& slider) override
@@ -85,10 +100,24 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
         }
 
         auto value = slider.getValue();
-        auto text = juce::String::formatted("%.0f", value);
+        auto text = slider.getTextFromValue(value);
         g.setColour(juce::Colours::white);
-        g.setFont(20.0f);
-        g.drawFittedText(text, bounds.toNearestInt(), juce::Justification::centred, 1);
+        g.setFont(11.0f);
+
+        auto textWidth = g.getCurrentFont().getStringWidth(text);
+        auto textHeight = g.getCurrentFont().getHeight();
+
+        auto textBounds = juce::Rectangle<int>(
+            bounds.getCentreX() - textWidth / 2 - 5,
+            bounds.getCentreY() - textHeight / 2 - 2,
+            textWidth + 10,
+            textHeight + 4
+        ).toNearestInt();
+
+        g.setColour(juce::Colours::black);
+        g.fillRect(textBounds);
+        g.setColour(juce::Colours::white);
+        g.drawText(text, textBounds, juce::Justification::centred, false);
     };
 
     void drawResizableFrame(juce::Graphics& g, int w, int h, const juce::BorderSize<int>& b) override
@@ -123,10 +152,24 @@ struct CustomLookAndFeel : juce::LookAndFeel_V4
 
     void drawLabel(juce::Graphics& g, juce::Label& label) override
     {
-        g.setColour(juce::Colours::black);
-        g.setFont(18.0f);
-        g.drawFittedText(label.getText(), label.getLocalBounds().reduced(14), juce::Justification::centred, 1);
+        auto* component = label.getAttachedComponent();
+        if (component != nullptr)
+        {
+            g.setColour(juce::Colours::black);
+            g.setFont(18.0f);
+            g.drawFittedText(label.getText(), label.getLocalBounds().reduced(14), juce::Justification::centred, 1);
+        }
+        else if (pluginWindowHeadingPng.isValid())
+        {
+            g.setColour(juce::Colours::black);
+            g.setFont(23.0f);
+            g.drawImage(pluginWindowHeadingPng, label.getLocalBounds().reduced(12).toFloat(), juce::RectanglePlacement::stretchToFit);
+            g.drawFittedText(label.getText(), label.getLocalBounds().reduced(12), juce::Justification::centred, 1);
+        }
+
     };
+    private:
+        JUCE_LEAK_DETECTOR(CustomLookAndFeel)
 };
 
 

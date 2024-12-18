@@ -9,7 +9,6 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "./Lib/CustomLookAndFeel.h"
 #include "./Lib/CustomGUI.h"
 
 //==============================================================================
@@ -34,7 +33,7 @@ private:
     CustomRotarySlider highPassSlider, lowPassSlider, allGainSlider;
     CustomVerticalSlider midGainSlider;
     CustomToggleButton midGainToggle, highPassToggle, lowPassToggle;
-    CustomLabel highPassLabel, midGainLabel, lowPassLabel, allGainLabel, midGainToggleLabel, highPassToggleLabel, lowPassToggleLabel, pluginWindowLabel;
+    CustomLabel highPassLabel, midGainLabel, lowPassLabel, allGainLabel, midGainToggleLabel, highPassToggleLabel, lowPassToggleLabel, pluginWindowHeading;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> lowPassAttachment, highPassAttachment, midGainAttachment, allGainAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> lpToggleAttachment, hpToggleAttachment, mgToggleAttachment;
     void getAllComponents();

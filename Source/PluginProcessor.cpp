@@ -218,7 +218,7 @@ void LaweqAudioProcessor::setupAllParameters()
             20.0f)); // default value
         layout.add(std::make_unique<juce::AudioParameterFloat>("midGain", // parameterID
             "midGain", // parameter name
-            juce::NormalisableRange<float>(-24.0f, 24.0f, 0.5f, 1.0f), // range for the parameters along with interval and skew factor
+            juce::NormalisableRange<float>(-24.0f, 24.0f, 0.05f, 1.0f), // range for the parameters along with interval and skew factor
             0.0f)); // default value
         layout.add(std::make_unique<juce::AudioParameterFloat>("allGain", // parameterID
             "allGain", // parameter name
@@ -241,11 +241,11 @@ void LaweqAudioProcessor::setupAllParameters()
         layout.add(std::make_unique<juce::AudioParameterFloat>("midFreq", // parameterID
             "midFreq", // parameter name
             juce::NormalisableRange<float>(200.0f, 5000.0f, 0.5f, 1.0f), // range for the parameters along with interval and skew factor
-            1000.0f)); // default value
+            510.0f)); // default value
         layout.add(std::make_unique<juce::AudioParameterFloat>("midQ", // parameterID
             "midQ", // parameter name
             juce::NormalisableRange<float>(0.1f, 10.0f, 1.0f, 1.0f), // range for the parameters along with interval and skew factor
-            1.0f)); // default value
+            4.0f)); // default value
 
         return layout;
     };
