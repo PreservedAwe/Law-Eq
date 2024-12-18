@@ -11,7 +11,11 @@
 
 //==============================================================================
 LaweqAudioProcessorEditor::LaweqAudioProcessorEditor (LaweqAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), customLnf(std::make_unique<CustomLookAndFeel>()), highPassSlider(customLnf.get()), lowPassSlider(customLnf.get()), midGainSlider(customLnf.get()), allGainSlider(customLnf.get()), highPassToggle(customLnf.get()), lowPassToggle(customLnf.get()), midGainToggle(customLnf.get())
+    : AudioProcessorEditor (&p), audioProcessor (p),
+    customLnf(std::make_unique<CustomLookAndFeel>()),
+    highPassSlider(customLnf.get()), lowPassSlider(customLnf.get()), midGainSlider(customLnf.get()), allGainSlider(customLnf.get()),
+    highPassToggle(customLnf.get()), lowPassToggle(customLnf.get()), midGainToggle(customLnf.get()),
+    highPassLabel(customLnf.get()), midGainLabel(customLnf.get()), lowPassLabel(customLnf.get()), allGainLabel(customLnf.get()), midGainToggleLabel(customLnf.get()), highPassToggleLabel(customLnf.get()), lowPassToggleLabel(customLnf.get()), pluginWindowLabel(customLnf.get())
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -48,6 +52,15 @@ void LaweqAudioProcessorEditor::resized()
     auto topMain = bounds.removeFromTop(bounds.getHeight() * 0.20);
     auto bottomMain = bounds.removeFromBottom(bounds.getHeight() * 0.25);
 
+    //Top Left 
+    auto leftTArea = topMain.removeFromLeft(topMain.getWidth() * 0.33);
+
+    //Top Right
+    auto rightTArea = topMain.removeFromRight(topMain.getWidth() * 0.5);
+
+    //Top Middle
+    auto middleTArea = topMain;
+
     //Bottom Left 
     auto leftBArea = bottomMain.removeFromLeft(bottomMain.getWidth() * 0.33);
     auto leftBSubArea = leftBArea.removeFromLeft(leftBArea.getWidth() * 0.33);
@@ -73,10 +86,18 @@ void LaweqAudioProcessorEditor::resized()
     lowPassToggle.setBounds(rightBSubArea);
     midGainToggle.setBounds(middleBSubArea);
     highPassToggle.setBounds(leftBSubArea);
+    pluginWindowLabel.setBounds(middleTArea);
 }
 
 void LaweqAudioProcessorEditor::getAllComponents()
 {
+    std::vector<CustomToggleButton*> buttons = { &lowPassToggle, &highPassToggle, &midGainToggle };
+
+    for (auto* b : buttons)
+    {
+        b->setClickingTogglesState(true);
+        b->onClick = [b] { b->repaint(); };
+    }
 
     highPassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "highPass", highPassSlider);
     lowPassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(*audioProcessor.parameters, "lowPass", lowPassSlider);
@@ -86,13 +107,21 @@ void LaweqAudioProcessorEditor::getAllComponents()
     hpToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "hpToggle", highPassToggle);
     mgToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(*audioProcessor.parameters, "mgToggle", midGainToggle);
 
-    std::vector<CustomToggleButton*> buttons = { &lowPassToggle, &highPassToggle, &midGainToggle };
-
-    for (auto* b : buttons)
-    {
-        b->setClickingTogglesState(true);
-        b->onClick = [b] { b->repaint(); };
-    }
+    highPassLabel.setText("High Pass", juce::sendNotification);
+    highPassLabel.attachToComponent(&highPassSlider, false);
+    lowPassLabel.setText("Low Pass", juce::sendNotification);
+    lowPassLabel.attachToComponent(&lowPassSlider, false);
+    midGainLabel.setText("Mids", juce::sendNotification);
+    midGainLabel.attachToComponent(&midGainSlider, false);
+    allGainLabel.setText("Gain", juce::sendNotification);
+    allGainLabel.attachToComponent(&allGainSlider, false);
+    highPassToggleLabel.setText("HP", juce::sendNotification);
+    highPassToggleLabel.attachToComponent(&highPassToggle, false);
+    lowPassToggleLabel.setText("LP", juce::sendNotification);
+    lowPassToggleLabel.attachToComponent(&lowPassToggle, false);
+    midGainToggleLabel.setText("M", juce::sendNotification);
+    midGainToggleLabel.attachToComponent(&midGainToggle, false);
+    pluginWindowLabel.setText("LAW-EQ", juce::sendNotification);
 
     std::vector<juce::Component*> components =
     {
@@ -105,7 +134,12 @@ void LaweqAudioProcessorEditor::getAllComponents()
         &midGainToggle,
         &highPassLabel,
         &midGainLabel,
-        &lowPassLabel
+        &lowPassLabel,
+        &allGainLabel,
+        &midGainToggleLabel,
+        &lowPassToggleLabel,
+        &highPassToggleLabel,
+        &pluginWindowLabel,
     };
 
     for (auto* comp : components)

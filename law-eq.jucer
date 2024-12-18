@@ -21,6 +21,7 @@
               file="Source/Assets/toggleButtonOn.png"/>
       </GROUP>
       <GROUP id="{8164D155-C556-ACD5-1BF4-0172F878E9B6}" name="Lib">
+        <FILE id="vufO0V" name="CustomGUI.h" compile="0" resource="0" file="Source/Lib/CustomGUI.h"/>
         <FILE id="BhQNxP" name="CustomLookAndFeel.h" compile="0" resource="0"
               file="Source/Lib/CustomLookAndFeel.h"/>
       </GROUP>
