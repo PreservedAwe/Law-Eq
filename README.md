@@ -1,11 +1,12 @@
 # Law-Eq
 
 This is an equalizer audio plugin that contains controllable parameters for:
-    LowPass Filter Knob
-    HighPass Filter Knob
-    Mid Range Peak Filter Knob
-    Gain Knob
-    Toggle Buttons to Disable or Enable filters
+
+- LowPass Filter Knob
+- HighPass Filter Knob
+- Mid Range Peak Filter Knob
+- Gain Knob
+- Toggle Buttons to Disable or Enable filters
 
 ## INSTALL AND DEMO RELEASE VERSION
 
