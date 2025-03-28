@@ -1,40 +1,54 @@
+![](https://i.imgur.com/3dOucmz.png)
+
 # Law-Eq
+[![Total Commits](https://img.shields.io/github/commit-activity/t/PreservedAwe/Law-Eq?style=flat-square)](https://github.com/PreservedAwe/Law-Eq/graphs/commit-activity)
 
-This is an equalizer audio plugin that contains controllable parameters for:
+This is an audio `equalizer` which offers a set of adjustable parameters, allowing you to fine-tune your sound with precision and accuracy.
 
-- LowPass Filter Knob
-- HighPass Filter Knob
+## App Preview
+
+Click this image to view a preview of this software on `youtube`
+
+[![](http://img.youtube.com/vi/wl5U8oAbMsw/0.jpg)](https://www.youtube.com/watch?v=wl5U8oAbMsw)
+
+## Features
+
+![](https://i.imgur.com/DN1FP8k.gif)
+- Low Pass Filter Knob
+- High Pass Filter Knob
 - Mid Range Peak Filter Knob
 - Gain Knob
-- Toggle Buttons to Disable or Enable filters
+- Toggle Buttons to `disable` or `enable` each filters
 
-## INSTALL AND DEMO RELEASE VERSION
+## Installation
 
-1. Open The "Official" Folder in this directory.
+### Option 1:(Compiled Binary)
 
-2. Download the appropriate version for your system.
+- Open The "Official" Folder in this directory.
 
-3. VST3(Windows), EXE(Windows 64bit).
+- Download the appropriate version for your system.
 
-4. Open your daw or plugin host of choice and load the file or run if exe.
+- VST3(Windows), EXE(Windows 64bit).
 
-## BUILD AND RUN THE PROJECT 
+- Open your daw or plugin host of choice and add the plugin (vst) or run if exe.
 
-1. Clone git repo onto your system.
+### Option 2:(Build From Source)
 
-2. Download JUCE, Projucer and the official IDE of choice that Projucer supports based on your system. Here is a link to the JUCE framework official [website](https://juce.com/get-juce/).
+```bash
+$ git clone https://github.com/PreservedAwe/Law-Eq.git
+```
+- Clone git repo onto your system.
 
-3. Build, run, then setup Projucer with Juce Modules.
+- Download JUCE, Projucer and the official IDE of choice that Projucer supports based on your system. Here is a link to the JUCE framework official [website](https://juce.com/get-juce/).
 
-4. Open the law-eq.jucer file with projucer.
+- Build, run, then setup Projucer with Juce Modules.
 
-5. Save and load the project with your IDE of choice.
+- Open the law-eq.jucer file with projucer.
 
-6. Build and Run.
+- Save and load the project with your IDE of choice.
+
+- Build and Run.
 
 ## Thank You
 
 Thank you for taking a look at my project!
-
-
-
