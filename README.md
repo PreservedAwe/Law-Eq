@@ -7,7 +7,7 @@ This is an audio `equalizer` which offers a set of adjustable parameters, allowi
 
 ## App Preview
 
-Click this image to view a preview of this software on `youtube`
+Click this image to view a preview of this software on `youtube`.
 
 [![](http://img.youtube.com/vi/wl5U8oAbMsw/0.jpg)](https://www.youtube.com/watch?v=wl5U8oAbMsw)
 
@@ -21,7 +21,8 @@ Click this image to view a preview of this software on `youtube`
 - Toggle Buttons to `disable` or `enable` each filters
 
 ## Installation
-
+![](https://i.imgur.com/9bGX1tX.png)
+Main code that handles the processing of the audio buffer.
 ### Option 1:(Compiled Binary)
 
 - Open The "Official" Folder in this directory.
